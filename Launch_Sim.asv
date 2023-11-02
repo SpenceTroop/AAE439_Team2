@@ -1,0 +1,28 @@
+%% Rocket Launch Script
+
+data = load('Thrust_Curve.mat');
+thrust = struct2array(data); %lbf
+
+tstep = 1/2000; %2000 Hz data collection rate
+
+t_b = length(thrust)*tstep;
+
+Cd = 0.5; %Needs to be updated
+A = 1; %Needs to be updated
+m = 1; %Needs to be updated
+
+%% ODE Function
+
+function dxdt = EOM(t,x, C_D, T,m_fuel)
+
+burn_t = 3; %s
+g = 9.81; %m/s/s
+rho = 1.225; %kg/m^3
+A = pi*(3.1/2 * 2.54 / 100)^2; %m^2
+
+% x(3) = m_0 - m_fuel/burn_t
+
+dxdt = [x(2); T/x(3) - g - sign(x(2))*rho*C_D*A*x(2)^2/(2*x(3)); -m_fuel/burn_t];
+
+
+end
